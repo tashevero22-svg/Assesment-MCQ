@@ -11,7 +11,9 @@ body{font-family:Arial,sans-serif;max-width:850px;margin:0 auto;padding:12px;bac
 input[type="text"],input[type="date"]{padding:10px;border:1px solid #ccc;border-radius:6px;width:46%}
 label{display:block;margin:5px 0;padding:9px;border:1px solid #eee;border-radius:6px;cursor:pointer}
 label:hover{background:#e8f0fe}
+label.selected{background:#c8e6c9;border:2px solid #25D366;font-weight:bold}
 .btn-whatsapp{background:#25D366;color:#fff;font-weight:bold;padding:16px;border:none;border-radius:8px;font-size:18px;cursor:pointer;width:100%;margin-top:10px}
+.result-banner{background:#fff3cd;border:2px solid #ff9800;padding:12px;border-radius:8px;text-align:center;display:none}
 </style>
 </head>
 <body>
@@ -19,14 +21,15 @@ label:hover{background:#e8f0fe}
 <h2>HIPAA & PHI - Assessment MCQ</h2>
 <p>40 Multiple Choice Questions</p>
 </div>
+<div id="viewBanner" class="card result-banner"></div>
 <div class="card">
-<b>Name:</b> <input type="text" id="name" placeholder="Enter Your Full Name"> 
+<b>Name:</b> <input type="text" id="name" placeholder="Enter Your Full Name">
 <b>Date:</b> <input type="date" id="date">
 <p>Instructions: Choose the correct answer for each question.</p>
 </div>
 <div id="quiz"></div>
 <div class="card">
-<button class="btn-whatsapp" onclick="submitToWhatsApp()">📤 SUBMIT TO 9265197625</button>
+<button class="btn-whatsapp" id="submitBtn" onclick="submitToWhatsApp()">📤 SUBMIT TO 9265197625</button>
 </div>
 <script>
 const questions=[
@@ -75,27 +78,47 @@ let container=document.getElementById('quiz');
 questions.forEach((q,i)=>{
  let d=document.createElement('div');
  d.className='card';
- d.innerHTML=`<b>${i+1}. ${q.q}</b>`+q.o.map((opt,j)=>`<label><input type="radio" name="q${i}" value="${j}"> ${String.fromCharCode(97+j)}) ${opt}</label>`).join('');
+ d.innerHTML=`<b>${i+1}. ${q.q}</b>`+q.o.map((opt,j)=>`<label id="l${i}_${j}"><input type="radio" name="q${i}" value="${j}"> ${String.fromCharCode(97+j)}) ${opt}</label>`).join('');
  container.appendChild(d);
 });
+
+// CHECK IF LINK HAS ANSWERS (For Trainer View)
+window.onload=function(){
+ const params=new URLSearchParams(window.location.search);
+ if(params.has('ans')){
+   let name=params.get('name')||'';
+   let date=params.get('date')||'';
+   let ans=params.get('ans')||'';
+   document.getElementById('name').value=name;
+   document.getElementById('date').value=date;
+   document.getElementById('viewBanner').style.display='block';
+   document.getElementById('viewBanner').innerHTML=`<b>👁️ Viewing Submission</b><br>Name: <b>${name}</b> | Date: ${date} | Answers are highlighted in GREEN below`;
+   document.getElementById('submitBtn').style.display='none';
+   for(let i=0;i<ans.length && i<40;i++){
+     let v=ans[i];
+     if(v!=='9'){
+       let radio=document.querySelector(`input[name="q${i}"][value="${v}"]`);
+       if(radio){ radio.checked=true; document.getElementById(`l${i}_${v}`).classList.add('selected'); }
+     }
+   }
+ }
+};
+
 function submitToWhatsApp(){
- let name=document.getElementById('name').value;
+ let name=document.getElementById('name').value.trim();
  let date=document.getElementById('date').value;
  if(!name){alert('Please enter your Name first!');return;}
- let fullPaper=`*HIPAA & PHI - Assessment MCQ*\n\n*Name:* ${name}\n*Date:* ${date}\n\n*--------------------------------*\n`;
+ let ansString="";
+ let fullPaper=`*HIPAA & PHI - Assessment MCQ*\n\n*Name:* ${name}\n*Date:* ${date}\n\n`;
  questions.forEach((q,i)=>{
   let sel=document.querySelector(`input[name="q${i}"]:checked`);
-  let ansIndex=sel?parseInt(sel.value):-1;
-  let ansText=ansIndex>=0?`${String.fromCharCode(97+ansIndex)}) ${q.o[ansIndex]}`:"Not Answered";
-  fullPaper+=`*${i+1}. ${q.q}*\n`;
-  q.o.forEach((opt,j)=>{
-    let letter=String.fromCharCode(97+j);
-    let mark = j===ansIndex ? ">> " : "   ";
-    fullPaper+=`${mark}${letter}) ${opt}\n`;
-  });
-  fullPaper+=`Your Answer: ${ansText}\n\n`;
+  let ansIndex=sel?parseInt(sel.value):9;
+  ansString+=ansIndex;
+  let ansText=ansIndex!==9?`${String.fromCharCode(97+ansIndex)}) ${q.o[ansIndex]}`:"Not Answered";
+  fullPaper+=`*${i+1}. ${q.q}*\nYour Answer: ${ansText}\n\n`;
  });
- fullPaper+=`*Link:* https://assesment-mcq.vercel.app\nSubmitted via Portal`;
+ let resultLink=`https://assesment-mcq.vercel.app?name=${encodeURIComponent(name)}&date=${encodeURIComponent(date)}&ans=${ansString}`;
+ fullPaper+=`*View Full Paper with Selected Answers:*\n${resultLink}\n\nSubmitted via Portal`;
  let url=`https://wa.me/919265197625?text=${encodeURIComponent(fullPaper)}`;
  window.open(url,'_blank');
 }
