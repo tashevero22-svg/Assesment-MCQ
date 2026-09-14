@@ -29,7 +29,7 @@ label.selected{background:#c8e6c9;border:2px solid #25D366;font-weight:bold}
 </div>
 <div id="quiz"></div>
 <div class="card">
-<button class="btn-whatsapp" id="submitBtn" onclick="submitToWhatsApp()">📤 SUBMIT TO 9265197625</button>
+<button class="btn-whatsapp" id="submitBtn" onclick="submitToWhatsApp()">📤 SUBMIT TO 9016953417</button>
 </div>
 <script>
 const questions=[
@@ -115,7 +115,7 @@ function submitToWhatsApp(){
  });
  let resultLink=`https://assesment-mcq.vercel.app?name=${encodeURIComponent(name)}&date=${encodeURIComponent(date)}&ans=${ansString}`;
  let msg=`*HIPAA & RCM Assessment Submission*\n\n*Name:* ${name}\n*Date:* ${date}\n\n*Answers:* ${shortAns.join(', ')}\n\n*Click to view FULL paper with your selected answers:*\n${resultLink}`;
- let url=`https://wa.me/919265197625?text=${encodeURIComponent(msg)}`;
+ let url=`https://wa.me/919016953417?text=${encodeURIComponent(msg)}`;
  window.open(url,'_blank');
 }
 </script>
