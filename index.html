@@ -81,8 +81,6 @@ questions.forEach((q,i)=>{
  d.innerHTML=`<b>${i+1}. ${q.q}</b>`+q.o.map((opt,j)=>`<label id="l${i}_${j}"><input type="radio" name="q${i}" value="${j}"> ${String.fromCharCode(97+j)}) ${opt}</label>`).join('');
  container.appendChild(d);
 });
-
-// CHECK IF LINK HAS ANSWERS (For Trainer View)
 window.onload=function(){
  const params=new URLSearchParams(window.location.search);
  if(params.has('ans')){
@@ -92,7 +90,7 @@ window.onload=function(){
    document.getElementById('name').value=name;
    document.getElementById('date').value=date;
    document.getElementById('viewBanner').style.display='block';
-   document.getElementById('viewBanner').innerHTML=`<b>👁️ Viewing Submission</b><br>Name: <b>${name}</b> | Date: ${date} | Answers are highlighted in GREEN below`;
+   document.getElementById('viewBanner').innerHTML=`<b>👁️ Viewing Submission</b><br>Name: <b>${name}</b> | Date: ${date}<br>Answers highlighted in GREEN`;
    document.getElementById('submitBtn').style.display='none';
    for(let i=0;i<ans.length && i<40;i++){
      let v=ans[i];
@@ -103,23 +101,21 @@ window.onload=function(){
    }
  }
 };
-
 function submitToWhatsApp(){
  let name=document.getElementById('name').value.trim();
  let date=document.getElementById('date').value;
  if(!name){alert('Please enter your Name first!');return;}
  let ansString="";
- let fullPaper=`*HIPAA & PHI - Assessment MCQ*\n\n*Name:* ${name}\n*Date:* ${date}\n\n`;
+ let shortAns=[];
  questions.forEach((q,i)=>{
   let sel=document.querySelector(`input[name="q${i}"]:checked`);
   let ansIndex=sel?parseInt(sel.value):9;
   ansString+=ansIndex;
-  let ansText=ansIndex!==9?`${String.fromCharCode(97+ansIndex)}) ${q.o[ansIndex]}`:"Not Answered";
-  fullPaper+=`*${i+1}. ${q.q}*\nYour Answer: ${ansText}\n\n`;
+  shortAns.push(`Q${i+1}:${ansIndex===9?'X':String.fromCharCode(97+ansIndex)}`);
  });
  let resultLink=`https://assesment-mcq.vercel.app?name=${encodeURIComponent(name)}&date=${encodeURIComponent(date)}&ans=${ansString}`;
- fullPaper+=`*View Full Paper with Selected Answers:*\n${resultLink}\n\nSubmitted via Portal`;
- let url=`https://wa.me/919265197625?text=${encodeURIComponent(fullPaper)}`;
+ let msg=`*HIPAA & RCM Assessment Submission*\n\n*Name:* ${name}\n*Date:* ${date}\n\n*Answers:* ${shortAns.join(', ')}\n\n*Click to view FULL paper with your selected answers:*\n${resultLink}`;
+ let url=`https://wa.me/919265197625?text=${encodeURIComponent(msg)}`;
  window.open(url,'_blank');
 }
 </script>
