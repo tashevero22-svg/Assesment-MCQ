@@ -82,15 +82,21 @@ function submitToWhatsApp(){
  let name=document.getElementById('name').value;
  let date=document.getElementById('date').value;
  if(!name){alert('Please enter your Name first!');return;}
- let answers=[];
+ let fullPaper=`*HIPAA & PHI - Assessment MCQ*\n\n*Name:* ${name}\n*Date:* ${date}\n\n*--------------------------------*\n`;
  questions.forEach((q,i)=>{
   let sel=document.querySelector(`input[name="q${i}"]:checked`);
-  let val=sel?String.fromCharCode(97+parseInt(sel.value)):'Not Answered';
-  answers.push(`Q${i+1}: ${val}`);
+  let ansIndex=sel?parseInt(sel.value):-1;
+  let ansText=ansIndex>=0?`${String.fromCharCode(97+ansIndex)}) ${q.o[ansIndex]}`:"Not Answered";
+  fullPaper+=`*${i+1}. ${q.q}*\n`;
+  q.o.forEach((opt,j)=>{
+    let letter=String.fromCharCode(97+j);
+    let mark = j===ansIndex ? ">> " : "   ";
+    fullPaper+=`${mark}${letter}) ${opt}\n`;
+  });
+  fullPaper+=`Your Answer: ${ansText}\n\n`;
  });
- let detail=answers.join('%0A');
- let msg=`*HIPAA & RCM Assessment Submission*%0A%0AName: ${name}%0ADate: ${date}%0A%0A*Answers:*%0A${detail}%0A%0ASubmitted via Assessment Portal`;
- let url=`https://wa.me/919265197625?text=${msg}`;
+ fullPaper+=`*Link:* https://assesment-mcq.vercel.app\nSubmitted via Portal`;
+ let url=`https://wa.me/919265197625?text=${encodeURIComponent(fullPaper)}`;
  window.open(url,'_blank');
 }
 </script>
