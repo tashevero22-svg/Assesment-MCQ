@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assessment_MCQ - HIPAA & PHI</title>
+<style>
+body{font-family:Arial,sans-serif;max-width:850px;margin:0 auto;padding:12px;background:#f0f2f5}
+.top{background:#1a73e8;color:#fff;padding:18px;border-radius:12px;text-align:center}
+.card{background:#fff;padding:14px;margin:10px 0;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,0.1)}
+input[type="text"],input[type="date"]{padding:10px;border:1px solid #ccc;border-radius:6px;width:46%}
+label{display:block;margin:5px 0;padding:9px;border:1px solid #eee;border-radius:6px;cursor:pointer}
+label:hover{background:#e8f0fe}
+.btn{padding:14px;border:none;border-radius:8px;font-size:16px;cursor:pointer;width:100%;margin-top:8px}
+.btn-check{background:#1a73e8;color:#fff}
+.btn-whatsapp{background:#25D366;color:#fff;font-weight:bold}
+.small{font-size:12px;color:#666}
+</style>
+</head>
+<body>
+<div class="top">
+<h2>HIPAA & PHI - Assessment MCQ</h2>
+<p>40 Multiple Choice Questions - Original DOCX Same to Same</p>
+</div>
+
+<div class="card">
+<b>Name:</b> <input type="text" id="name" placeholder="Enter Your Full Name"> 
+<b>Date:</b> <input type="date" id="date">
+<p class="small">Instructions: Choose the correct answer for each question.</p>
+</div>
+
+<div id="quiz"></div>
+
+<div class="card">
+<button class="btn btn-check" onclick="calculate()">Check My Score</button>
+<div id="result" style="display:none;margin-top:12px;font-weight:bold;text-align:center"></div>
+<button class="btn btn-whatsapp" id="whatsappBtn" style="display:none" onclick="submitToWhatsApp()">📤 SUBMIT TO 9265197625 (WhatsApp)</button>
+<p class="small" style="text-align:center">After checking score, click submit button to send result to trainer on WhatsApp</p>
+</div>
+
+<script>
+const questions=[
+{q:"What does HIPAA stand for?",o:["Health Insurance Privacy and Protection Act","Health Insurance Portability and Accountability Act","Health Information Protection and Accountability Act","Health Insurance Patient Assistance Act"],a:1},
+{q:"What is the primary purpose of HIPAA?",o:["To increase hospital revenue","To protect patient privacy and the security of PHI","To reduce insurance premiums","To manage employee attendance"],a:1},
+{q:"What does PHI stand for?",o:["Personal Health Insurance","Protected Health Information","Patient Health Insurance","Private Healthcare Information"],a:1},
+{q:"Which of the following is considered PHI?",o:["A patient's medical record","A company's financial report","An employee's attendance sheet","A hospital's electricity bill"],a:0},
+{q:"Which HIPAA rule governs the use and disclosure of PHI?",o:["Security Rule","Privacy Rule","Billing Rule","Insurance Rule"],a:1},
+{q:"Which HIPAA rule safeguards electronic PHI (ePHI)?",o:["Privacy Rule","Security Rule","Breach Rule","Billing Rule"],a:1},
+{q:"What does the HIPAA Breach Notification Rule require?",o:["Employees to change jobs after a breach","Covered entities to report certain breaches of unsecured PHI","Patients to pay for data breaches","Hospitals to stop using electronic records"],a:1},
+{q:"Which of the following is an example of demographic information linked to health?",o:["Patient's favorite color","Patient's name and address","Hospital building number","Employee ID only"],a:1},
+{q:"Why is protecting PHI important?",o:["It builds patient trust","It increases office working hours","It eliminates all medical expenses","It prevents employees from taking leave"],a:0},
+{q:"What does COBRA allow eligible employees to do?",o:["Continue health insurance coverage after certain job loss or reduction in work hours","Receive free medical treatment forever","Avoid paying insurance premiums","Change their medical records"],a:0},
+{q:"COBRA coverage is usually available for:",o:["Only 1 month","Usually 18 months, sometimes up to 36 months","Exactly 5 years","Unlimited time"],a:1},
+{q:"Under COBRA, who generally pays the insurance premium?",o:["The employer only","The government only","The patient/employee","The hospital"],a:2},
+{q:"What is the Affordable Care Act commonly known as?",o:["Medicare","Medicaid","Obamacare","COBRA"],a:2},
+{q:"Which is a key feature of the Affordable Care Act?",o:["Insurance marketplaces","Free insurance for everyone","Elimination of all medical bills","No preventive services"],a:0},
+{q:"What is the 'Minimum Necessary' principle?",o:["Access all patient records","Access only the PHI needed to perform your job","Share all available PHI with coworkers","Print every patient record"],a:1},
+{q:"Which of the following is a proper practice when using a PMS system?",o:["Access it for personal curiosity","Share your password with coworkers","Access it only for work-related tasks","Download patient information to a personal device"],a:2},
+{q:"What should you do if you receive a suspicious login notification?",o:["Ignore it","Share your credentials","Report it immediately","Delete the system"],a:2},
+{q:"Which of the following is NOT an appropriate way to share PHI?",o:["Authorized secure system","Secure File Transfer Protocol (SFTP)","Personal WhatsApp","Approved company email"],a:2},
+{q:"What can happen to an employee for a serious or intentional HIPAA violation?",o:["Promotion","Termination of employment","Salary increase","Extra vacation"],a:1},
+{q:"What is one possible consequence for an organization that violates HIPAA?",o:["Fines and compliance audits","Free insurance","Automatic tax benefits","Increased patient benefits"],a:0},
+{q:"What does RCM stand for?",o:["Revenue Care Management","Revenue Cycle Management","Revenue Claim Monitoring","Revenue Coding Management"],a:1},
+{q:"What is the first stage of the Revenue Cycle Management process?",o:["Medical Coding","Patient Scheduling","Claim Adjudication","Payment Posting"],a:1},
+{q:"What is an important activity during patient scheduling?",o:["Denying claims","Assigning the correct provider and appointment slot","Posting insurance payments","Generating EOBs"],a:1},
+{q:"Which information is commonly captured during patient scheduling?",o:["Patient demographics","Claim denial reason","Payment adjustment","EOB details"],a:0},
+{q:"What is the main purpose of eligibility and benefits verification?",o:["To determine whether the patient's insurance coverage is active and what benefits are available","To collect outstanding patient balances","To create medical codes","To deny claims"],a:0},
+{q:"What is the purpose of pre-authorization?",o:["To obtain required approval from the insurance company before certain services","To post patient payments","To generate patient statements","To follow up on old claims"],a:0},
+{q:"What is the purpose of the patient visit/check-in stage?",o:["To update patient information and obtain required consent forms","To submit claims","To analyze denials","To post payments"],a:0},
+{q:"Why is medical transcription important?",o:["It creates accurate written documentation from recorded physician notes","It determines insurance premiums","It collects patient payments","It approves insurance claims"],a:0},
+{q:"Which codes are primarily used to identify a patient's diagnosis?",o:["CPT codes","HCPCS codes","ICD codes","EOB codes"],a:2},
+{q:"Which codes describe procedures or services performed?",o:["ICD codes","CPT/HCPCS codes","EOB codes","COBRA codes"],a:1},
+{q:"What is the main purpose of charge capture and claims submission?",o:["To record services provided and submit claims to insurance","To schedule patients","To collect patient balances only","To hire medical coders"],a:0},
+{q:"What happens during claim adjudication?",o:["The patient schedules an appointment","The insurance company reviews the claim and determines the payment outcome","The provider records a voice note","The patient changes their address"],a:1},
+{q:"What document communicates an insurance company's claim/payment decision?",o:["PMS","EOB","ICD","COBRA"],a:1},
+{q:"What is the primary purpose of payment posting?",o:["To record insurance and patient payments accurately","To schedule appointments","To obtain prior authorization","To create diagnosis codes"],a:0},
+{q:"What can happen if a payment is posted incorrectly?",o:["The account balance may become incorrect","The patient automatically gets free treatment","The claim is always approved","The insurance coverage increases"],a:0},
+{q:"What is the main responsibility of Accounts Receivable (AR) follow-up?",o:["Monitoring unpaid claims and following up with insurance companies","Creating medical records","Scheduling new patients","Assigning diagnosis codes"],a:0},
+{q:"What is an aging report used for in AR?",o:["To monitor outstanding claims based on how long they have been unpaid","To record patient birthdays","To create medical codes","To schedule appointments"],a:0},
+{q:"What is denial management?",o:["The process of identifying, analyzing, and resolving denied claims","The process of scheduling patients","The process of recording physician notes","The process of collecting premiums"],a:0},
+{q:"Which of the following is an activity in denial management?",o:["Analyzing denial reasons and correcting claim errors","Booking appointments","Recording patient demographics","Assigning provider slots"],a:0},
+{q:"What is the purpose of patient statements and collections?",o:["To bill patients for their remaining balances and collect payments","To assign diagnosis codes","To verify insurance eligibility only","To adjudicate insurance claims"],a:0},
+];
+
+let container=document.getElementById('quiz');
+questions.forEach((q,i)=>{
+ let d=document.createElement('div');
+ d.className='card';
+ d.innerHTML=`<b>${i+1}. ${q.q}</b>`+q.o.map((opt,j)=>`<label><input type="radio" name="q${i}" value="${j}"> ${String.fromCharCode(97+j)}) ${opt}</label>`).join('');
+ container.appendChild(d);
+});
+
+let finalScore=0;
+let finalAnswers=[];
+
+function calculate(){
+ let score=0;
+ let answers=[];
+ questions.forEach((q,i)=>{
+  let sel=document.querySelector(`input[name="q${i}"]:checked`);
+  let val=sel?parseInt(sel.value):-1;
+  answers.push(val);
+  if(val===q.a) score++;
+ });
+ finalScore=score;
+ finalAnswers=answers;
+ let res=document.getElementById('result');
+ res.style.display='block';
+ res.innerHTML=`Score: ${score} / ${questions.length} - ${score>=32?'PASS ✅':'Review needed ⚠️'}`;
+ document.getElementById('whatsappBtn').style.display='block';
+ window.scrollTo(0,document.body.scrollHeight);
+}
+
+function submitToWhatsApp(){
+ let name=document.getElementById('name').value;
+ let date=document.getElementById('date').value;
+ if(!name){alert('Please enter your Name first!');return;}
+ if(finalAnswers.length===0){alert('Please Check Score first!');return;}
+ let detail=finalAnswers.map((ans,i)=>`Q${i+1}: ${ans===-1?'Not Answered':String.fromCharCode(97+ans)}`).join('%0A');
+ let msg=`*HIPAA & RCM Assessment Submission*%0A%0AName: ${name}%0ADate: ${date}%0AScore: ${finalScore} / ${questions.length}%0A%0A*Answers:*%0A${detail}%0A%0ASubmitted via GitHub Repo`;
+ let url=`https://wa.me/919265197625?text=${msg}`;
+ window.open(url,'_blank');
+}
+</script>
+</body>
+  </html>
