@@ -25,11 +25,10 @@ label.selected{background:#c8e6c9;border:2px solid #25D366;font-weight:bold}
 <div class="card">
 <b>Name:</b> <input type="text" id="name" placeholder="Enter Your Full Name">
 <b>Date:</b> <input type="date" id="date">
-<p>Instructions: Choose the correct answer for each question.</p>
 </div>
 <div id="quiz"></div>
 <div class="card">
-<button class="btn-whatsapp" id="submitBtn" onclick="submitToWhatsApp()">📤 SUBMIT TO 9016953417</button>
+<button class="btn-whatsapp" id="submitBtn" onclick="submitToWhatsApp()">📤 SUBMIT TO 9265197625</button>
 </div>
 <script>
 const questions=[
@@ -90,7 +89,7 @@ window.onload=function(){
    document.getElementById('name').value=name;
    document.getElementById('date').value=date;
    document.getElementById('viewBanner').style.display='block';
-   document.getElementById('viewBanner').innerHTML=`<b>👁️ Viewing Submission</b><br>Name: <b>${name}</b> | Date: ${date}<br>Answers highlighted in GREEN`;
+   document.getElementById('viewBanner').innerHTML=`<b>Submission</b><br>Name: <b>${name}</b> | Date: ${date}<br>Selected answers in GREEN`;
    document.getElementById('submitBtn').style.display='none';
    for(let i=0;i<ans.length && i<40;i++){
      let v=ans[i];
@@ -104,18 +103,14 @@ window.onload=function(){
 function submitToWhatsApp(){
  let name=document.getElementById('name').value.trim();
  let date=document.getElementById('date').value;
- if(!name){alert('Please enter your Name first!');return;}
+ if(!name){alert('Please enter Name');return;}
  let ansString="";
- let shortAns=[];
  questions.forEach((q,i)=>{
   let sel=document.querySelector(`input[name="q${i}"]:checked`);
-  let ansIndex=sel?parseInt(sel.value):9;
-  ansString+=ansIndex;
-  shortAns.push(`Q${i+1}:${ansIndex===9?'X':String.fromCharCode(97+ansIndex)}`);
+  ansString+=sel?sel.value:9;
  });
  let resultLink=`https://assesment-mcq.vercel.app?name=${encodeURIComponent(name)}&date=${encodeURIComponent(date)}&ans=${ansString}`;
- let msg=`*HIPAA & RCM Assessment Submission*\n\n*Name:* ${name}\n*Date:* ${date}\n\n*Answers:* ${shortAns.join(', ')}\n\n*Click to view FULL paper with your selected answers:*\n${resultLink}`;
- let url=`https://wa.me/919016953417?text=${encodeURIComponent(msg)}`;
+ let url=`https://wa.me/919265197625?text=${encodeURIComponent(resultLink)}`;
  window.open(url,'_blank');
 }
 </script>
